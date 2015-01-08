@@ -3,21 +3,15 @@ require 'offsite_payments/version'
 
 Gem::Specification.new do |s|
   s.platform     = Gem::Platform::RUBY
-  s.name         = 'offsite_payments'
+  s.name         = 'koffsite_payments'
   s.version      = OffsitePayments::VERSION
-  s.summary      = 'Framework and tools for dealing with offsite (hosted) payment pages.'
-  s.description  = 'Offsite Payments is a simple abstraction library used in ' +
-                   'and sponsored by Shopify. It is written by Tobias Luetke, ' +
-                   'Cody Fauser, and contributors. The aim of the project is ' +
-                   'to put as simple an abstraction as possible on top of ' +
-                   'offsite (often called hosted) payment pages, and allow ' +
-                   'contributors to easily help services such as Shopify ' +
-                   'extend the number of offsite payment services they support.'
+  s.summary      = 'Fork of the Shopify Offsite Payments gem for Kill Bill.'
+  s.description  = 'This fork contains unmerged pull requests for additional gateways.'
   s.license      = "MIT"
 
-  s.author = 'Tobias Luetke'
-  s.email = 'tobi@shopify.com'
-  s.homepage = 'https://github.com/Shopify/offsite_payments'
+  s.author = 'Kill Bill core team'
+  s.email = 'killbilling-users@googlegroups.com'
+  s.homepage = 'http://killbill.io/'
 
   s.files = Dir['CHANGELOG', 'README.md', 'MIT-LICENSE', 'lib/**/*']
   s.require_path = 'lib'
