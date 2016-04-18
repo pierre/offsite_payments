@@ -69,13 +69,19 @@ module OffsitePayments #:nodoc:
       class Helper < OffsitePayments::Helper
         include Encryption
 
+        attr_reader :identifier
+
+        def initialize(order, account, options={})
+          super
+          @identifier = rand(0..99999).to_s.rjust(5, '0')
+          add_field 'VendorTxCode', "#{order}-#{@identifier}"
+        end
+
         mapping :credential2, 'EncryptKey'
 
         mapping :account, 'Vendor'
         mapping :amount, 'Amount'
         mapping :currency, 'Currency'
-
-        mapping :order, 'VendorTxCode'
 
         mapping :customer,
           :first_name => 'BillingFirstnames',
@@ -131,6 +137,8 @@ module OffsitePayments #:nodoc:
           fields['BillingPostCode'] ||= "0000"
           fields['DeliveryPostCode'] ||= "0000"
 
+          fields['ReferrerID'] = referrer_id if referrer_id
+
           crypt_skip = ['Vendor', 'EncryptKey', 'SendEmail']
           crypt_skip << 'BillingState'  unless fields['BillingCountry']  == 'US'
           crypt_skip << 'DeliveryState' unless fields['DeliveryCountry'] == 'US'
@@ -138,14 +146,12 @@ module OffsitePayments #:nodoc:
           key = fields['EncryptKey']
           @crypt ||= create_crypt_field(fields.except(*crypt_skip), key)
 
-          result = {
+          {
             'VPSProtocol' => '3.00',
             'TxType' => 'PAYMENT',
             'Vendor' => @fields['Vendor'],
             'Crypt'  => @crypt
           }
-          result['ReferrerID'] = referrer_id if referrer_id
-          result
         end
 
         private
@@ -246,7 +252,7 @@ module OffsitePayments #:nodoc:
 
         # Vendor-supplied code (:order mapping).
         def item_id
-          params['VendorTxCode']
+          params['VendorTxCode'].rpartition('-').first
         end
 
         # Internal SagePay code, typically "{LONG-UUID}".

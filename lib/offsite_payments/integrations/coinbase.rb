@@ -81,7 +81,11 @@ module OffsitePayments #:nodoc:
         end
 
         def gross
-          "%.2f" % (params['total_native']['cents'].to_f / 100)
+          if params['total_original'].present?
+            "%.2f" % (params['total_original']['cents'].to_f / 100)
+          else
+            "%.2f" % (params['total_native']['cents'].to_f / 100)
+          end
         end
 
         def currency
@@ -101,7 +105,6 @@ module OffsitePayments #:nodoc:
         # apc arrives. Coinbase will verify that all the information we received are correct
         # and will return a ok or a fail.
         def acknowledge(authcode = {})
-
           uri = URI.parse(Coinbase.notification_confirmation_url % transaction_id)
 
           response = Coinbase.do_request(uri, @options[:credential1], @options[:credential2])
@@ -110,6 +113,7 @@ module OffsitePayments #:nodoc:
           posted_order = @params
           parse(response)
 
+          return false unless @params
           %w(id custom total_native status).all? { |param| posted_order[param] == @params[param] }
         end
 
@@ -118,6 +122,8 @@ module OffsitePayments #:nodoc:
         def parse(post)
           @raw = post.to_s
           @params = JSON.parse(post)['order']
+        rescue JSON::ParserError
+          @params = {}
         end
       end
 
