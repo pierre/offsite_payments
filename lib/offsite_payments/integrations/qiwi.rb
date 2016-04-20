@@ -3,7 +3,7 @@ module OffsitePayments #:nodoc:
     module Qiwi
 
       mattr_accessor :service_url
-      self.service_url = 'https://w.qiwi.ru/payments.action'
+      self.service_url = 'https://w.qiwi.com/payment/form.action'
 
       def self.helper(order, account, options = {})
         Helper.new(order, account, options)
