@@ -17,6 +17,7 @@ module OffsitePayments #:nodoc:
         mapping :account, 'account'
         mapping :amount, 'amount'
         mapping :order, 'id'
+        mapping :provider, 'provider'
 
         def form_method
           'GET'
